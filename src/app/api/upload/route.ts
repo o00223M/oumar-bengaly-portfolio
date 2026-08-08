@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
 import crypto from "crypto";
+import { getSupabaseServerClient, UPLOADS_BUCKET } from "@/lib/supabase";
 
 const ALLOWED_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -40,11 +39,23 @@ export async function POST(req: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${crypto.randomUUID()}.${extension}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await writeFile(path.join(uploadDir, filename), buffer);
+
+  const supabase = getSupabaseServerClient();
+  const { error } = await supabase.storage
+    .from(UPLOADS_BUCKET)
+    .upload(filename, buffer, { contentType: file.type });
+
+  if (error) {
+    return NextResponse.json(
+      { error: `Échec du téléversement : ${error.message}` },
+      { status: 500 }
+    );
+  }
+
+  const { data } = supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(filename);
 
   return NextResponse.json({
-    url: `/uploads/${filename}`,
+    url: data.publicUrl,
     mediaType: file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
   });
 }

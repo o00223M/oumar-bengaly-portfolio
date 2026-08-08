@@ -7,17 +7,22 @@ au code.
 
 ## Stack technique
 
-- **Next.js 15** (App Router) + TypeScript
-- **Tailwind CSS v4** — palette terre cuite / vert profond / sable / blanc cassé
-- **Prisma + SQLite** — base de données locale (`prisma/dev.db`)
+- **Next.js 16** (App Router) + TypeScript
+- **Tailwind CSS v4** — palette noir / violet / orange, police système Apple
+- **Prisma + PostgreSQL (Supabase)** — base de données hébergée gratuitement
+- **Supabase Storage** — hébergement des images/vidéos téléversées
 - **Framer Motion** — animations et micro-interactions
 - Authentification admin par mot de passe (cookie de session signé, JWT via `jose`)
 
-## Démarrage
+Cette stack a été choisie pour permettre un hébergement **100 % gratuit et
+permanent** sur Vercel + Supabase (voir plus bas), sans mise en veille et sans
+perte de données au fil des mises à jour.
+
+## Démarrage local
 
 ```bash
 npm install
-npx prisma migrate dev   # crée la base SQLite si besoin
+npx prisma migrate dev   # crée les tables dans la base Supabase
 npx prisma db seed       # charge le contenu de démonstration (placeholders)
 npm run dev
 ```
@@ -28,15 +33,9 @@ l'administration.
 
 ## Configuration (`.env`)
 
-| Variable | Rôle |
-| --- | --- |
-| `DATABASE_URL` | chemin de la base SQLite (`file:./dev.db`) |
-| `ADMIN_PASSWORD` | mot de passe de connexion à l'admin — **à changer avant mise en ligne** |
-| `SESSION_SECRET` | secret de signature des sessions — **à régénérer avant mise en ligne** |
-
-Le mot de passe par défaut en local est `ChangeMoi2026!`. Changez-le et
-régénérez `SESSION_SECRET` (une chaîne aléatoire longue) avant tout déploiement
-public.
+Copiez `.env.example` en `.env` et remplissez les valeurs (voir ce fichier
+pour le détail de chaque variable — connexion Postgres, clés Supabase, mot de
+passe admin, secret de session).
 
 ## Contenu à remplacer
 
@@ -56,20 +55,43 @@ Accessible via un lien discret en bas de page (footer) ou directement sur
   leur ordre d'affichage et leur statut "mis en avant".
 - Ajouter / modifier / supprimer des logos partenaires et leur ordre.
 
-Les fichiers téléversés (images/vidéos, 50 Mo max) sont stockés dans
-`public/uploads/`.
+Les fichiers téléversés (images/vidéos, 50 Mo max) sont stockés dans un bucket
+Supabase Storage public nommé `uploads`.
 
-## ⚠️ À savoir avant un déploiement sur Vercel
+## Déploiement gratuit (Vercel + Supabase)
 
-Vercel utilise un système de fichiers **éphémère et en lecture seule** en
-production : les fichiers écrits dans `public/uploads/` au runtime (et la base
-SQLite elle-même) **ne persisteront pas** entre les déploiements ou les
-redémarrages de fonction. Pour un déploiement en production sur Vercel, il
-faudra migrer :
+### 1. Supabase (base de données + stockage)
 
-1. le stockage des médias vers un service comme **Vercel Blob** ou **Cloudinary** ;
-2. la base de données vers un service hébergé comme **Vercel Postgres**,
-   **Neon** ou **Supabase** (Prisma migre facilement de SQLite à Postgres).
+1. Créez un compte sur [supabase.com](https://supabase.com) (gratuit, sans
+   carte bancaire) et un nouveau projet.
+2. Dans **Storage**, créez un bucket nommé exactement `uploads`, avec
+   l'option **Public bucket** activée.
+3. Dans **Project Settings → Database**, récupérez les chaînes de connexion
+   *Transaction pooler* (port 6543, pour `DATABASE_URL`) et *Direct connection*
+   (port 5432, pour `DIRECT_URL`).
+4. Dans **Project Settings → API**, récupérez le `Project URL`
+   (`SUPABASE_URL`) et la clé secrète `service_role` (`SUPABASE_SERVICE_ROLE_KEY`).
 
-En local, ou sur un hébergement avec disque persistant (VPS, Railway, etc.),
-la configuration actuelle fonctionne telle quelle.
+### 2. Initialiser la base
+
+Remplissez `.env` en local avec ces valeurs, puis :
+
+```bash
+npx prisma migrate dev --name init
+npx prisma db seed
+```
+
+### 3. Vercel (hébergement)
+
+1. Créez un compte sur [vercel.com](https://vercel.com) (gratuit) et
+   connectez-le à votre compte GitHub.
+2. **Add New → Project**, sélectionnez le dépôt `oumar-bengaly-portfolio`.
+3. Dans **Environment Variables**, ajoutez les mêmes variables que dans
+   `.env` : `DATABASE_URL`, `DIRECT_URL`, `SUPABASE_URL`,
+   `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`, `SESSION_SECRET`.
+4. Cliquez sur **Deploy**.
+
+Le site est alors accessible à l'URL fournie par Vercel (ex.
+`oumar-bengaly-portfolio.vercel.app`), gratuitement et sans limite de temps.
+Un domaine personnalisé peut être ajouté gratuitement ensuite dans les
+réglages du projet Vercel.
