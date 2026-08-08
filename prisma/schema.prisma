@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  DESIGN_GRAPHIQUE
+  MONTAGE_VIDEO
+  CONTENU_CLIMAT
+  CONTENU_AGRICULTURE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model PortfolioItem {
+  id           String    @id @default(cuid())
+  title        String
+  description  String    @default("")
+  category     Category
+  mediaType    MediaType
+  mediaUrl     String
+  thumbnailUrl String?
+  featured     Boolean   @default(false)
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String
+  websiteUrl String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
