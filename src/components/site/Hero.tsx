@@ -74,7 +74,7 @@ export default function Hero() {
           transition={{ duration: 0.6 }}
           className="text-sm font-semibold uppercase tracking-[0.2em] text-sand"
         >
-          Design graphique · Montage vidéo · Climat &amp; agriculture
+          Design graphique · Montage vidéo · Création de contenu
         </motion.p>
 
         <motion.h1
@@ -83,7 +83,7 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="max-w-3xl font-serif text-4xl font-semibold leading-[1.08] sm:text-5xl md:text-6xl"
         >
-          Je raconte en images l&apos;agriculture et le climat qui transforment l&apos;Afrique.
+          Je donne forme aux idées — en image, en vidéo, en récit.
         </motion.h1>
 
         <motion.p
@@ -92,10 +92,11 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="max-w-xl text-lg text-cream/85"
         >
-          Designer graphique et monteur vidéo, je crée des contenus qui rendent
-          visibles les enjeux agricoles et climatiques africains — fort de mon
-          expertise d&apos;ingénieur agronome, coordinateur pays d&apos;Impactus
-          Afrika et facilitateur au sein de YOUNGO.
+          Designer graphique et monteur vidéo, je crée des contenus pour des
+          causes et des marques variées — avec un engagement particulier pour
+          l&apos;agriculture et le climat, fort de mon expertise d&apos;ingénieur
+          agronome, coordinateur pays d&apos;Impactus Afrika et facilitateur au
+          sein de YOUNGO.
         </motion.p>
 
         <motion.div
