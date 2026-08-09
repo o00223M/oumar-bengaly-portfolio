@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Oumar Bengaly — Agronomie, climat & jeunesse",
+  title: "Oumar Bengaly — Design graphique, montage vidéo & récits climat/agriculture",
   description:
-    "Ingénieur agronome, coordinateur pays Impactus Afrika et facilitateur YOUNGO. Au carrefour de l'agriculture durable, de la communication climat et du leadership jeunesse en Afrique.",
+    "Designer graphique et monteur vidéo, je crée des contenus qui rendent visibles les enjeux agricoles et climatiques africains — fort de mon expertise d'ingénieur agronome, coordinateur pays Impactus Afrika et facilitateur YOUNGO.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
