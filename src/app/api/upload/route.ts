@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { getSupabaseServerClient, UPLOADS_BUCKET } from "@/lib/supabase";
+import { getSupabaseServerClient } from "@/lib/supabase";
+import { UPLOADS_BUCKET } from "@/lib/constants";
 
 const ALLOWED_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -12,17 +13,17 @@ const ALLOWED_TYPES: Record<string, string> = {
   "video/webm": "webm",
 };
 
-const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB — plafond du bucket Supabase (plan gratuit)
 
+// Returns a signed upload URL so the browser can send the file bytes
+// directly to Supabase Storage, bypassing the platform's request body
+// size limit on this route (Vercel caps function payloads at 4.5MB).
 export async function POST(req: NextRequest) {
-  const formData = await req.formData().catch(() => null);
-  const file = formData?.get("file");
+  const body = await req.json().catch(() => null);
+  const contentType = typeof body?.contentType === "string" ? body.contentType : "";
+  const size = typeof body?.size === "number" ? body.size : 0;
 
-  if (!file || !(file instanceof File)) {
-    return NextResponse.json({ error: "Aucun fichier fourni." }, { status: 400 });
-  }
-
-  const extension = ALLOWED_TYPES[file.type];
+  const extension = ALLOWED_TYPES[contentType];
   if (!extension) {
     return NextResponse.json(
       { error: "Type de fichier non autorisé." },
@@ -30,32 +31,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (file.size > MAX_SIZE_BYTES) {
+  if (size > MAX_SIZE_BYTES) {
     return NextResponse.json(
       { error: "Fichier trop volumineux (50 Mo max)." },
       { status: 400 }
     );
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${crypto.randomUUID()}.${extension}`;
-
   const supabase = getSupabaseServerClient();
-  const { error } = await supabase.storage
-    .from(UPLOADS_BUCKET)
-    .upload(filename, buffer, { contentType: file.type });
 
-  if (error) {
+  const { data, error } = await supabase.storage
+    .from(UPLOADS_BUCKET)
+    .createSignedUploadUrl(filename);
+
+  if (error || !data) {
     return NextResponse.json(
-      { error: `Échec du téléversement : ${error.message}` },
+      { error: `Échec de la préparation du téléversement : ${error?.message}` },
       { status: 500 }
     );
   }
 
-  const { data } = supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(filename);
+  const { data: publicUrlData } = supabase.storage
+    .from(UPLOADS_BUCKET)
+    .getPublicUrl(filename);
 
   return NextResponse.json({
-    url: data.publicUrl,
-    mediaType: file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
+    path: data.path,
+    token: data.token,
+    url: publicUrlData.publicUrl,
+    mediaType: contentType.startsWith("video/") ? "VIDEO" : "IMAGE",
   });
 }

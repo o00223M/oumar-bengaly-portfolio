@@ -70,7 +70,14 @@ Supabase Storage public nommé `uploads`.
    *Transaction pooler* (port 6543, pour `DATABASE_URL`) et *Direct connection*
    (port 5432, pour `DIRECT_URL`).
 4. Dans **Project Settings → API**, récupérez le `Project URL`
-   (`SUPABASE_URL`) et la clé secrète `service_role` (`SUPABASE_SERVICE_ROLE_KEY`).
+   (`SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_URL`, même valeur), la clé secrète
+   `service_role` (`SUPABASE_SERVICE_ROLE_KEY`) et la clé publique
+   `anon`/`publishable` (`NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+
+   La clé publique est nécessaire car l'admin téléverse les fichiers
+   **directement depuis le navigateur vers Supabase** (et non via le serveur) :
+   les fonctions Vercel limitent les requêtes à 4,5 Mo, ce qui bloquerait
+   l'envoi de vidéos.
 
 ### 2. Initialiser la base
 
@@ -88,7 +95,8 @@ npx prisma db seed
 2. **Add New → Project**, sélectionnez le dépôt `oumar-bengaly-portfolio`.
 3. Dans **Environment Variables**, ajoutez les mêmes variables que dans
    `.env` : `DATABASE_URL`, `DIRECT_URL`, `SUPABASE_URL`,
-   `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`, `SESSION_SECRET`.
+   `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`,
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `ADMIN_PASSWORD`, `SESSION_SECRET`.
 4. Cliquez sur **Deploy**.
 
 Le site est alors accessible à l'URL fournie par Vercel (ex.

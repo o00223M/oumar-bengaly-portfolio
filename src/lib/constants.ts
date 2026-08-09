@@ -6,3 +6,5 @@ export const SOCIAL_LINKS = {
 
 export const SITE_NAME = "Oumar Bengaly";
 export const SITE_LOCATION = "Bamako, Mali";
+
+export const UPLOADS_BUCKET = "uploads";

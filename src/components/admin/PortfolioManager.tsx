@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CATEGORIES, CATEGORY_LABELS, CategoryValue } from "@/lib/categories";
+import { uploadFileDirect } from "@/lib/supabase-browser";
 
 type Item = {
   id: string;
@@ -53,17 +54,30 @@ export default function PortfolioManager({ initialItems }: { initialItems: Item[
   async function handleUpload(file: File) {
     setUploading(true);
     setError(null);
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body });
-    setUploading(false);
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+
+    const signRes = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contentType: file.type, size: file.size }),
+    });
+
+    if (!signRes.ok) {
+      const data = await signRes.json().catch(() => ({}));
+      setUploading(false);
       setError(data.error ?? "Échec du téléversement.");
       return;
     }
-    const data = await res.json();
-    setForm((f) => ({ ...f, mediaUrl: data.url, mediaType: data.mediaType }));
+
+    const { path, token, url, mediaType } = await signRes.json();
+
+    try {
+      await uploadFileDirect(file, path, token);
+      setForm((f) => ({ ...f, mediaUrl: url, mediaType }));
+    } catch {
+      setError("Échec du téléversement vers le stockage.");
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
