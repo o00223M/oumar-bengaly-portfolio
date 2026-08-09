@@ -76,17 +76,22 @@ export default function PortfolioGallery({ items }: { items: PortfolioItem[] }) 
           className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           <AnimatePresence mode="popLayout">
-            {filtered.map((item) => (
+            {filtered.map((item, index) => (
               <motion.button
                 key={item.id}
                 type="button"
                 layout
-                initial={{ opacity: 0, scale: 0.94 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.94 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 24, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.2, delay: 0 } }}
+                whileHover={{ y: -6, transition: { duration: 0.25, delay: 0 } }}
+                transition={{
+                  duration: 0.4,
+                  delay: Math.min(index, 8) * 0.05,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 onClick={() => setActive(item)}
-                className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand-light text-left"
+                className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand-light text-left shadow-black/0 transition-shadow duration-300 hover:shadow-xl hover:shadow-black/20"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

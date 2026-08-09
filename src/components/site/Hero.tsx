@@ -1,25 +1,73 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const glowX = useSpring(mouseX, { stiffness: 60, damping: 24 });
+  const glowY = useSpring(mouseY, { stiffness: 60, damping: 24 });
+
+  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  }
+
   return (
     <section
+      ref={sectionRef}
       id="top"
+      onMouseMove={handleMouseMove}
       className="relative isolate flex min-h-[92vh] items-center overflow-hidden bg-green text-cream"
     >
-      <div
+      <motion.div
         aria-hidden
+        style={{ y: backgroundY }}
         className="absolute inset-0 -z-10 bg-cover bg-center opacity-90"
-        style={{ backgroundImage: "url('/placeholders/hero.svg')" }}
-      />
+      >
+        <div
+          className="h-[124%] w-full bg-cover bg-center"
+          style={{ backgroundImage: "url('/placeholders/hero.svg')" }}
+        />
+      </motion.div>
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-t from-green via-green/60 to-green/20"
       />
+      <motion.div
+        aria-hidden
+        style={{ left: glowX, top: glowY, translateX: "-50%", translateY: "-50%" }}
+        className="pointer-events-none absolute -z-[5] h-[520px] w-[520px] rounded-full bg-terracotta/25 blur-[130px]"
+      />
+      <motion.div
+        aria-hidden
+        style={{ left: glowX, top: glowY, translateX: "-50%", translateY: "-50%" }}
+        className="pointer-events-none absolute -z-[5] h-[220px] w-[220px] rounded-full bg-orange/20 blur-[90px]"
+      />
 
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-28 sm:px-8">
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-28 sm:px-8"
+      >
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,33 +103,46 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="flex flex-wrap gap-4 pt-2"
         >
-          <a
+          <motion.a
             href="#portfolio"
-            className="rounded-full bg-terracotta px-7 py-3 text-sm font-semibold text-cream shadow-lg shadow-terracotta/20 transition-transform hover:-translate-y-0.5 hover:bg-terracotta-dark"
+            whileHover={{ y: -3, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="rounded-full bg-terracotta px-7 py-3 text-sm font-semibold text-cream shadow-lg shadow-terracotta/20 hover:bg-terracotta-dark"
           >
             Découvrir mon travail
-          </a>
-          <a
+          </motion.a>
+          <motion.a
             href={SOCIAL_LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-cream/40 px-7 py-3 text-sm font-semibold text-cream transition-colors hover:border-cream hover:bg-cream/10"
+            whileHover={{ y: -3, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="rounded-full border border-cream/40 px-7 py-3 text-sm font-semibold text-cream hover:border-cream hover:bg-cream/10"
           >
             Me suivre sur LinkedIn
-          </a>
+          </motion.a>
         </motion.div>
-      </div>
+      </motion.div>
 
-      <motion.div
-        aria-hidden
+      <motion.a
+        href="#portfolio"
+        aria-label="Défiler vers le portfolio"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-cream/60 sm:flex"
+        transition={{ delay: 0.9, duration: 0.8 }}
+        whileHover={{ scale: 1.1 }}
+        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 sm:flex"
       >
-        <span className="text-xs uppercase tracking-[0.25em]">Défiler</span>
-        <span className="h-8 w-px animate-pulse bg-cream/50" />
-      </motion.div>
+        <span className="flex h-11 w-7 items-start justify-center rounded-full border-2 border-cream/40 p-1.5">
+          <motion.span
+            className="h-1.5 w-1.5 rounded-full bg-orange"
+            animate={{ y: [0, 16, 0], opacity: [1, 1, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+      </motion.a>
     </section>
   );
 }

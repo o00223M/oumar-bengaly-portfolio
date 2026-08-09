@@ -1,4 +1,5 @@
 import RevealOnScroll from "@/components/site/RevealOnScroll";
+import HoverLift from "@/components/site/HoverLift";
 
 const ROLES = [
   {
@@ -44,7 +45,7 @@ export default function AboutSection() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {ROLES.map((role, i) => (
             <RevealOnScroll key={role.title} delay={i * 0.1}>
-              <div className="h-full rounded-2xl border border-ink/10 bg-cream p-7 transition-shadow hover:shadow-xl hover:shadow-ink/5">
+              <HoverLift className="h-full rounded-2xl border border-ink/10 bg-cream p-7 transition-shadow hover:shadow-xl hover:shadow-ink/5">
                 <h3 className="font-serif text-xl font-semibold text-green">
                   {role.title}
                 </h3>
@@ -54,7 +55,7 @@ export default function AboutSection() {
                 <p className="mt-4 text-sm leading-relaxed text-ink-soft">
                   {role.detail}
                 </p>
-              </div>
+              </HoverLift>
             </RevealOnScroll>
           ))}
         </div>

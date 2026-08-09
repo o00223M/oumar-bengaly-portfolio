@@ -1,4 +1,5 @@
 import Nav from "@/components/site/Nav";
+import ScrollProgress from "@/components/site/ScrollProgress";
 import Hero from "@/components/site/Hero";
 import PortfolioGallery from "@/components/site/PortfolioGallery";
 import PartnersMarquee from "@/components/site/PartnersMarquee";
@@ -14,6 +15,7 @@ export default async function Home() {
 
   return (
     <>
+      <ScrollProgress />
       <Nav />
       <main>
         <Hero />

@@ -1,5 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import RevealOnScroll from "@/components/site/RevealOnScroll";
 import StatCounter from "@/components/site/StatCounter";
+import HoverLift from "@/components/site/HoverLift";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 const STATS = [
@@ -29,25 +33,28 @@ export default function VisionSection() {
               informent, mobilisent et inspirent l&apos;action — des salles de
               classe de Katibougou aux tables de négociation de la CCNUCC.
             </p>
-            <a
+            <motion.a
               href={SOCIAL_LINKS.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-block rounded-full bg-terracotta px-7 py-3 text-sm font-semibold text-cream transition-transform hover:-translate-y-0.5 hover:bg-terracotta-dark"
+              whileHover={{ y: -3, scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="mt-8 inline-block rounded-full bg-terracotta px-7 py-3 text-sm font-semibold text-cream hover:bg-terracotta-dark"
             >
               Me suivre sur LinkedIn
-            </a>
+            </motion.a>
           </RevealOnScroll>
 
           <div className="grid grid-cols-2 gap-6">
             {STATS.map((stat, i) => (
               <RevealOnScroll key={stat.label} delay={i * 0.08}>
-                <div className="rounded-2xl border border-cream/15 bg-cream/5 p-6">
+                <HoverLift className="rounded-2xl border border-cream/15 bg-cream/5 p-6 transition-colors hover:border-orange/40">
                   <p className="font-serif text-4xl font-semibold text-orange sm:text-5xl">
                     <StatCounter value={stat.value} suffix={stat.suffix} />
                   </p>
                   <p className="mt-2 text-sm text-cream/75">{stat.label}</p>
-                </div>
+                </HoverLift>
               </RevealOnScroll>
             ))}
           </div>
