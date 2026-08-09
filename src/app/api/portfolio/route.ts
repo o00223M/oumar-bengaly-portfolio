@@ -9,6 +9,7 @@ const createSchema = z.object({
   category: z.enum(CATEGORIES),
   mediaType: z.enum(["IMAGE", "VIDEO"]),
   mediaUrl: z.string().min(1),
+  thumbnailUrl: z.string().nullable().default(null),
   featured: z.boolean().default(false),
 });
 

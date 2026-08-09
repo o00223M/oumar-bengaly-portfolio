@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CATEGORIES, CATEGORY_LABELS, CategoryValue } from "@/lib/categories";
 import { uploadFileDirect } from "@/lib/supabase-browser";
+import { generateVideoThumbnail } from "@/lib/video-thumbnail";
 
 type Item = {
   id: string;
@@ -11,6 +12,7 @@ type Item = {
   category: CategoryValue;
   mediaType: "IMAGE" | "VIDEO";
   mediaUrl: string;
+  thumbnailUrl: string | null;
   featured: boolean;
   order: number;
 };
@@ -21,6 +23,7 @@ const EMPTY_FORM = {
   category: CATEGORIES[0] as CategoryValue,
   mediaType: "IMAGE" as "IMAGE" | "VIDEO",
   mediaUrl: "",
+  thumbnailUrl: "",
   featured: false,
 };
 
@@ -40,6 +43,7 @@ export default function PortfolioManager({ initialItems }: { initialItems: Item[
       category: item.category,
       mediaType: item.mediaType,
       mediaUrl: item.mediaUrl,
+      thumbnailUrl: item.thumbnailUrl ?? "",
       featured: item.featured,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -51,30 +55,48 @@ export default function PortfolioManager({ initialItems }: { initialItems: Item[
     setError(null);
   }
 
+  async function requestSignedUpload(contentType: string, size: number) {
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contentType, size }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error ?? "Échec du téléversement.");
+    }
+    return res.json() as Promise<{
+      path: string;
+      token: string;
+      url: string;
+      mediaType: "IMAGE" | "VIDEO";
+    }>;
+  }
+
   async function handleUpload(file: File) {
     setUploading(true);
     setError(null);
 
-    const signRes = await fetch("/api/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contentType: file.type, size: file.size }),
-    });
-
-    if (!signRes.ok) {
-      const data = await signRes.json().catch(() => ({}));
-      setUploading(false);
-      setError(data.error ?? "Échec du téléversement.");
-      return;
-    }
-
-    const { path, token, url, mediaType } = await signRes.json();
-
     try {
+      const { path, token, url, mediaType } = await requestSignedUpload(
+        file.type,
+        file.size
+      );
       await uploadFileDirect(file, path, token);
-      setForm((f) => ({ ...f, mediaUrl: url, mediaType }));
-    } catch {
-      setError("Échec du téléversement vers le stockage.");
+      setForm((f) => ({ ...f, mediaUrl: url, mediaType, thumbnailUrl: "" }));
+
+      if (mediaType === "VIDEO") {
+        try {
+          const thumbBlob = await generateVideoThumbnail(file);
+          const thumb = await requestSignedUpload("image/jpeg", thumbBlob.size);
+          await uploadFileDirect(thumbBlob, thumb.path, thumb.token);
+          setForm((f) => ({ ...f, thumbnailUrl: thumb.url }));
+        } catch {
+          // Pas bloquant : l'élément reste utilisable sans miniature générée.
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Échec du téléversement.");
     } finally {
       setUploading(false);
     }
@@ -239,10 +261,10 @@ export default function PortfolioManager({ initialItems }: { initialItems: Item[
             {uploading && <p className="mt-2 text-sm text-cream/50">Téléversement…</p>}
             {form.mediaUrl && !uploading && (
               <div className="mt-3 flex items-center gap-3">
-                {form.mediaType === "IMAGE" ? (
+                {form.mediaType === "IMAGE" || form.thumbnailUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={form.mediaUrl}
+                    src={form.thumbnailUrl || form.mediaUrl}
                     alt="Aperçu"
                     className="h-16 w-16 rounded-lg object-cover"
                   />
@@ -295,10 +317,10 @@ export default function PortfolioManager({ initialItems }: { initialItems: Item[
             key={item.id}
             className="flex items-center gap-4 rounded-xl border border-cream/10 bg-cream/5 p-4"
           >
-            {item.mediaType === "IMAGE" ? (
+            {item.mediaType === "IMAGE" || item.thumbnailUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={item.mediaUrl}
+                src={item.thumbnailUrl || item.mediaUrl}
                 alt={item.title}
                 className="h-14 w-14 flex-shrink-0 rounded-lg object-cover"
               />

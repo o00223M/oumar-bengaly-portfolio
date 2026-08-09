@@ -21,7 +21,7 @@ function getSupabaseBrowserClient() {
 }
 
 export async function uploadFileDirect(
-  file: File,
+  file: File | Blob,
   path: string,
   token: string
 ) {

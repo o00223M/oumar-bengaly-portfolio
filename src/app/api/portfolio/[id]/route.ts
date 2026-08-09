@@ -9,6 +9,7 @@ const updateSchema = z.object({
   category: z.enum(CATEGORIES).optional(),
   mediaType: z.enum(["IMAGE", "VIDEO"]).optional(),
   mediaUrl: z.string().min(1).optional(),
+  thumbnailUrl: z.string().nullable().optional(),
   featured: z.boolean().optional(),
   order: z.number().int().optional(),
 });

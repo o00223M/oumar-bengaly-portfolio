@@ -12,6 +12,7 @@ type PortfolioItem = {
   category: CategoryValue;
   mediaType: "IMAGE" | "VIDEO";
   mediaUrl: string;
+  thumbnailUrl?: string | null;
 };
 
 const FILTERS: { value: CategoryValue | "TOUT"; label: string }[] = [
@@ -93,13 +94,23 @@ export default function PortfolioGallery({ items }: { items: PortfolioItem[] }) 
                 onClick={() => setActive(item)}
                 className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand-light text-left shadow-black/0 transition-shadow duration-300 hover:shadow-xl hover:shadow-black/20"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.mediaUrl}
-                  alt={item.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                {item.mediaType === "VIDEO" && !item.thumbnailUrl ? (
+                  <video
+                    src={`${item.mediaUrl}#t=0.5`}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.thumbnailUrl || item.mediaUrl}
+                    alt={item.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
                 <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-ink/0 p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <span className="text-xs font-semibold uppercase tracking-wide text-sand">
                     {CATEGORY_LABELS[item.category]}
