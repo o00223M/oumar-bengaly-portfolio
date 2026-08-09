@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const portfolioItems = [
   {
-    title: "Identité visuelle — Campagne Sols Vivants",
+    title: "Identité visuelle : Campagne Sols Vivants",
     description:
       "Système graphique complet pour une campagne de sensibilisation à la santé des sols au Sahel.",
     category: "DESIGN_GRAPHIQUE" as const,
@@ -14,7 +14,7 @@ const portfolioItems = [
     order: 1,
   },
   {
-    title: "Affiches — Journée mondiale de l'alimentation",
+    title: "Affiches : Journée mondiale de l'alimentation",
     description: "Série d'affiches pédagogiques pour les universités partenaires.",
     category: "DESIGN_GRAPHIQUE" as const,
     mediaType: "IMAGE" as const,
@@ -23,7 +23,7 @@ const portfolioItems = [
     order: 2,
   },
   {
-    title: "Cartes postales — Agriculture régénératrice",
+    title: "Cartes postales : Agriculture régénératrice",
     description: "Illustrations diffusées lors des ateliers Impactus Afrika.",
     category: "DESIGN_GRAPHIQUE" as const,
     mediaType: "IMAGE" as const,
@@ -32,7 +32,7 @@ const portfolioItems = [
     order: 3,
   },
   {
-    title: "Récap COP — Voix des jeunes africains",
+    title: "Récap COP : Voix des jeunes africains",
     description: "Montage vidéo résumant les interventions de la délégation YOUNGO.",
     category: "MONTAGE_VIDEO" as const,
     mediaType: "VIDEO" as const,
@@ -41,7 +41,7 @@ const portfolioItems = [
     order: 4,
   },
   {
-    title: "Portrait — Catalyseurs d'Impact Mali",
+    title: "Portrait : Catalyseurs d'Impact Mali",
     description: "Série de portraits vidéo de l'équipe nationale.",
     category: "MONTAGE_VIDEO" as const,
     mediaType: "VIDEO" as const,
@@ -50,7 +50,7 @@ const portfolioItems = [
     order: 5,
   },
   {
-    title: "Mini-documentaire — Katibougou, terre d'apprentissage",
+    title: "Mini-documentaire : Katibougou, terre d'apprentissage",
     description: "Format court sur la vie étudiante à l'IPR/IFRA.",
     category: "MONTAGE_VIDEO" as const,
     mediaType: "VIDEO" as const,
@@ -68,7 +68,7 @@ const portfolioItems = [
     order: 7,
   },
   {
-    title: "Fil LinkedIn — Financement climat et jeunesse",
+    title: "Fil LinkedIn : Financement climat et jeunesse",
     description: "Contenu publié dans le cadre du groupe Alimentation & Agriculture de YOUNGO.",
     category: "CONTENU_CLIMAT" as const,
     mediaType: "IMAGE" as const,
@@ -77,7 +77,7 @@ const portfolioItems = [
     order: 8,
   },
   {
-    title: "Adaptation climatique — Témoignages du Sahel",
+    title: "Adaptation climatique : Témoignages du Sahel",
     description: "Format carrousel sur les stratégies d'adaptation des producteurs locaux.",
     category: "CONTENU_CLIMAT" as const,
     mediaType: "IMAGE" as const,
@@ -86,7 +86,7 @@ const portfolioItems = [
     order: 9,
   },
   {
-    title: "Agroécologie — Pratiques des jeunes agripreneurs",
+    title: "Agroécologie : Pratiques des jeunes agripreneurs",
     description: "Reportage photo sur les innovations agroécologiques au Mali.",
     category: "CONTENU_AGRICULTURE" as const,
     mediaType: "IMAGE" as const,
@@ -95,7 +95,7 @@ const portfolioItems = [
     order: 10,
   },
   {
-    title: "Sécurité alimentaire — Chaînes de valeur locales",
+    title: "Sécurité alimentaire : Chaînes de valeur locales",
     description: "Analyse vulgarisée des filières agricoles maliennes.",
     category: "CONTENU_AGRICULTURE" as const,
     mediaType: "IMAGE" as const,
@@ -104,7 +104,7 @@ const portfolioItems = [
     order: 11,
   },
   {
-    title: "Semences et résilience — Cycle de publications",
+    title: "Semences et résilience : Cycle de publications",
     description: "Contenu éducatif sur la conservation des semences paysannes.",
     category: "CONTENU_AGRICULTURE" as const,
     mediaType: "IMAGE" as const,

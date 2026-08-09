@@ -30,7 +30,7 @@ export default function VisionSection() {
               tout en régénérant les terres, et où la voix des jeunes façonne les
               politiques climatiques. Mon travail consiste à traduire la science
               agronomique et les enjeux climatiques en récits accessibles, qui
-              informent, mobilisent et inspirent l&apos;action — des salles de
+              informent, mobilisent et inspirent l&apos;action, des salles de
               classe de Katibougou aux tables de négociation de la CCNUCC.
             </p>
             <motion.a

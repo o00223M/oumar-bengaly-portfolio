@@ -83,7 +83,7 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="max-w-3xl font-serif text-4xl font-semibold leading-[1.08] sm:text-5xl md:text-6xl"
         >
-          Je donne forme aux idées — en image, en vidéo, en récit.
+          Je donne forme aux idées, en image, en vidéo, en récit.
         </motion.h1>
 
         <motion.p
@@ -93,7 +93,7 @@ export default function Hero() {
           className="max-w-xl text-lg text-cream/85"
         >
           Designer graphique et monteur vidéo, je crée des contenus pour des
-          causes et des marques variées — avec un engagement particulier pour
+          causes et des marques variées, avec un engagement particulier pour
           l&apos;agriculture et le climat, fort de mon expertise d&apos;ingénieur
           agronome, coordinateur pays d&apos;Impactus Afrika et facilitateur au
           sein de YOUNGO.

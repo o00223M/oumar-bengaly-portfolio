@@ -4,7 +4,7 @@ import HoverLift from "@/components/site/HoverLift";
 const ROLES = [
   {
     title: "Ingénieur Agronome",
-    org: "IPR/IFRA Katibougou — diplôme 2026",
+    org: "IPR/IFRA Katibougou · diplôme 2026",
     detail:
       "Formation en ingénierie agronomique, licence en agriculture durable obtenue au sein du même institut.",
   },
@@ -16,7 +16,7 @@ const ROLES = [
   },
   {
     title: "Facilitateur Communication",
-    org: "YOUNGO — CCNUCC, groupe Alimentation & Agriculture",
+    org: "YOUNGO · CCNUCC, groupe Alimentation & Agriculture",
     detail:
       "Sélectionné en 2026 pour animer la communication et la sensibilisation de la constituante jeunesse officielle de la CCNUCC.",
   },
